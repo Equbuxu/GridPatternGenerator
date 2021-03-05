@@ -1,0 +1,203 @@
+﻿<Window x:Class="PatternGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PatternGenerator"
+        xmlns:converters="clr-namespace:PatternGenerator.Converters"
+        xmlns:validators="clr-namespace:PatternGenerator.ValidationRules"
+        mc:Ignorable="d"
+        Title="Grid Pattern Generator" Height="260" Width="250"
+        ResizeMode="CanMinimize">
+    <Window.DataContext>
+        <local:ViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converters:IntToStringConverter x:Key="IntToStringConverter"/>
+    </Window.Resources>
+    <StackPanel Focusable="True" Background="LightGray">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Background="White">
+                <StackPanel Margin="2">
+                    <Label>Grid size</Label>
+                    <DockPanel>
+                        <Label>Width</Label>
+                        <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="GridWidth">
+                            <TextBox.Text>
+                                <Binding Path="GridWidth" Converter="{StaticResource IntToStringConverter}">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label>Height</Label>
+                        <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="GridHeight">
+                            <TextBox.Text>
+                                <Binding Path="GridHeight" Converter="{StaticResource IntToStringConverter}">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+            
+            <Border Margin="5" BorderThickness="1" BorderBrush="Gray" Grid.Column="1" Background="White">
+                <StackPanel Margin="2">
+                    <Label>Cell size, px</Label>
+                    <DockPanel>
+                        <Label>Width</Label>
+                        <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="CellWidth">
+                            <TextBox.Text>
+                                <Binding Path="CellWidth" Converter="{StaticResource IntToStringConverter}">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label>Height</Label>
+                        <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="CellHeight">
+                            <TextBox.Text>
+                                <Binding Path="CellHeight" Converter="{StaticResource IntToStringConverter}">
+                                    <Binding.ValidationRules>
+                                        <validators:PositiveRule/>
+                                        <validators:PositiveRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <TabControl Grid.ColumnSpan="2" Grid.Row="1" Height="110" Margin="5">
+                <TabItem Header="Grid">
+                    <Button Width="100" Height="20" Margin="5" Command="{Binding GridCommand}" ToolTipService.ShowOnDisabled="True" ToolTip="Invalid values in one or more fields or final image bigger than 5000x5000">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="ToolTipService.IsEnabled" Value="True" />
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=(Validation.HasError), ElementName=GridWidth}" Value="False"/>
+                                            <Condition Binding="{Binding Path=(Validation.HasError), ElementName=GridHeight}" Value="False"/>
+                                            <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CellWidth}" Value="False"/>
+                                            <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CellHeight}" Value="False"/>
+                                            <Condition Binding="{Binding Path=IsValid}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="IsEnabled" Value="True" />
+                                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        Copy grid image
+                    </Button>
+                </TabItem>
+                <TabItem Header="Windows">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label>Width</Label>
+                                    <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="WindowWidth">
+                                        <TextBox.Text>
+                                            <Binding Path="WindowWidth" Converter="{StaticResource IntToStringConverter}">
+                                                <Binding.ValidationRules>
+                                                    <validators:PositiveRule/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label>Height</Label>
+                                    <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="WindowHeight">
+                                        <TextBox.Text>
+                                            <Binding Path="WindowHeight" Converter="{StaticResource IntToStringConverter}">
+                                                <Binding.ValidationRules>
+                                                    <validators:PositiveRule/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <DockPanel>
+                                    <Label>Offset X</Label>
+                                    <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="WindowOffsetX">
+                                        <TextBox.Text>
+                                            <Binding Path="WindowOffsetX" Converter="{StaticResource IntToStringConverter}"/>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label>Offset Y</Label>
+                                    <TextBox Width="50" Height="20" HorizontalAlignment="Right" x:Name="WindowOffsetY">
+                                        <TextBox.Text>
+                                            <Binding Path="WindowOffsetY" Converter="{StaticResource IntToStringConverter}"/>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </DockPanel>
+                            </StackPanel>
+                        </Grid>
+                        <Button Width="100" Height="20" Margin="5" Command="{Binding WindowsCommand}" ToolTipService.ShowOnDisabled="True" 
+                                ToolTip="Invalid values in one or more fields or final image bigger than 5000x5000">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                    <Setter Property="ToolTipService.IsEnabled" Value="True" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=GridWidth}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=GridHeight}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CellWidth}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=CellHeight}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=WindowWidth}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=WindowHeight}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=WindowOffsetX}" Value="False" />
+                                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=WindowOffsetY}" Value="False" />
+                                                <Condition Binding="{Binding Path=IsValid}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True" />
+                                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            Copy grid image
+                        </Button>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+
+        </Grid>
+
+    </StackPanel>
+</Window>
